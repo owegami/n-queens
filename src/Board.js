@@ -61,8 +61,7 @@
       );
     },
 
-
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -79,7 +78,18 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      let row = this.get(rowIndex);
+      console.log(row);
+      let cols = this.get('n');
+      let counter = 0;
+      for (let i = 0; i < cols; i++) {
+        let value = row[i];
+        counter += value;
+      }
+      if (counter > 1) {
+        return true;
+      }
+      return false;
     },
 
     // test if any rows on this board contain conflicts
@@ -146,3 +156,11 @@
   };
 
 }());
+
+
+/*
+EDGE CASES:
+
+-too many rooks or queens
+
+*/
