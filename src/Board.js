@@ -139,7 +139,28 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var start = majorDiagonalColumnIndexAtFirstRow;
+
+      var n = this.get('n');
+      var counter = 0; //contains queens
+      var row = 0;
+      for ( var i = start; i < n; i++ ) { //iterate thru columns
+        if ( i < 0 ) {
+          row++;
+          continue;
+        } else if ( row === n ) {
+          break;
+        } else {
+          var value = this.get(row)[i];
+          console.log('value', value, 'i', i, 'row', row);
+          counter += value;
+          row++;
+          if ( counter > 1 ) {
+            return true;
+          }
+        }
+      }
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
@@ -182,5 +203,9 @@
 EDGE CASES:
 
 -too many rooks or queens
+
+OPTIMIZATION:
+
+while loop for diagonals
 
 */
