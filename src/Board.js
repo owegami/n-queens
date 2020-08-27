@@ -95,7 +95,11 @@
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      var result = true;
+      for (let i = 0; i < this.get('n'); i++) {
+        result = result && this.hasRowConflictAt(i);
+      }
+      return result;
     },
 
 
@@ -121,7 +125,11 @@
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var result = true;
+      for (let i = 0; i < this.get('n'); i++) {
+        result = result && this.hasColConflictAt(i);
+      }
+      return result;
     },
 
 
