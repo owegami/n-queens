@@ -20,15 +20,33 @@ window.findNRooksSolution = function(n) {
   for ( var i = 0; i < n; i++ ) {
     var newBoard = new Board({n: n}); //make new board
     newBoard.attributes[0][i] = 1; //add starting piece
-    solution = solutionChecker(newBoard, 1, [], false); //
+    solution = solutionChecker(newBoard, 1, 'array', false); //
   }
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
+
+  // var solution = undefined;
+  // var newBoard = new Board({n: n}); //make new board
+  // solution = solutionChecker(newBoard, 0, 'array', false); //
+  // console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+  // return solution;
+
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = undefined;
+
+  for ( var i = 0; i < n; i++ ) {
+    var newBoard = new Board({n: n}); //make new board
+    newBoard.attributes[0][i] = 1; //add starting piece
+    solutionCount = solutionChecker(newBoard, 1, 'number', false);
+  }
+
+  // var newBoard = new Board({n: n}); //make new board
+  // solutionCount = solutionChecker(newBoard, 0, 'number', false);
+
+
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
@@ -49,36 +67,50 @@ window.countNQueensSolutions = function(n) {
   return solutionCount;
 };
 
-var solutionChecker = function(board, row, results, isQueens) {
+var solutionChecker = function(board, row, typeOfResults, isQueens) {
 
-  var currentRow = board.attributes[row];
-  var nextRow = row + 1;
+  var solutionArray = [];
+  var solutionCount = 0;
 
-  // console.log('board', board.attributes);
-
-  if (nextRow === board.attributes.n + 1) {
-    // console.log('nextRow', nextRow);
-    if (Array.isArray(results) === true) {
-      let arrOfBoard = [];
+  var checker = function(board, row) {
+    //console.log('solutionArray', solutionArray);
+    if (row === board.attributes.n) {
+      // console.log('last time:', board);
+      var tempArr = [];
       for (let i = 0; i < board.attributes.n; i++) {
-        arrOfBoard.push(board.attributes[i]);
-        // console.log(i, arrOfBoard);
+        tempArr.push(board.attributes[i]);
       }
-      results.push(arrOfBoard);
-    } else if (typeof results === 'number') {
-      results++;
+      solutionCount++;
+      // console.log('solutionCOunt ', solutionCount);
+      solutionArray.push(tempArr);
+      // console.log('solutionArray length', solutionArray.length);
+      // return;
     }
-    // console.log('results', results);
-  } else {
-    for (let i = 0; i < board.attributes.n; i++) { //loop thru columns
-      currentRow[i] = 1; //toggle
-      if (!board.hasColConflictAt(i)) { //if theres no conflict
-        console.log(board);
-        return solutionChecker(board, nextRow, results, isQueens); //recur on next row
-      } else {
-        currentRow[i] = 0;
+
+    var currentRow = board.attributes[row]; //get row
+    for (let i = 0; i < board.attributes.n; i++) {
+      if (row < board.attributes.n) {
+        board.togglePiece(row, i);
+        if (!board.hasColConflictAt(i) && !board.hasRowConflictAt(i)) {
+          checker(board, (row + 1));
+        } else {
+        // newBoard.attributes[row][i] = 0;
+          board.togglePiece(row, i);
+        }
       }
+
     }
+  };
+
+  checker(board, row);
+
+  console.log('solutionArray', solutionArray);
+
+  if (typeOfResults === 'array') {
+    return solutionArray;
+  } else if (typeOfResults === 'number') {
+    return solutionCount;
   }
-  return results;
 };
+
+//we need to refactor our helper function because right now it's only returning one result. Possibly could have to have closure recursion within the helper function
