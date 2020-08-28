@@ -16,8 +16,12 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
-
+  var solution = undefined;
+  for ( var i = 0; i < n; i++ ) {
+    var newBoard = new Board({n: n}); //make new board
+    newBoard.attributes[0][i] = 1; //add starting piece
+    solution = solutionChecker(newBoard, 1, [], false); //
+  }
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
@@ -34,7 +38,6 @@ window.countNRooksSolutions = function(n) {
 window.findNQueensSolution = function(n) {
   var solution = undefined; //fixme
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
 };
 
@@ -44,4 +47,38 @@ window.countNQueensSolutions = function(n) {
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
+};
+
+var solutionChecker = function(board, row, results, isQueens) {
+
+  var currentRow = board.attributes[row];
+  var nextRow = row + 1;
+
+  // console.log('board', board.attributes);
+
+  if (nextRow === board.attributes.n + 1) {
+    // console.log('nextRow', nextRow);
+    if (Array.isArray(results) === true) {
+      let arrOfBoard = [];
+      for (let i = 0; i < board.attributes.n; i++) {
+        arrOfBoard.push(board.attributes[i]);
+        // console.log(i, arrOfBoard);
+      }
+      results.push(arrOfBoard);
+    } else if (typeof results === 'number') {
+      results++;
+    }
+    // console.log('results', results);
+  } else {
+    for (let i = 0; i < board.attributes.n; i++) { //loop thru columns
+      currentRow[i] = 1; //toggle
+      if (!board.hasColConflictAt(i)) { //if theres no conflict
+        console.log(board);
+        return solutionChecker(board, nextRow, results, isQueens); //recur on next row
+      } else {
+        currentRow[i] = 0;
+      }
+    }
+  }
+  return results;
 };
